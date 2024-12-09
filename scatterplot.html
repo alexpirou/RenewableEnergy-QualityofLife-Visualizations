@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scatter Plot</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .gridlines line {
+      stroke: #bbb;
+    }
+    .gridlines .domain {
+      stroke: none;
+    }
+    .legend {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+    .legend-box {
+      stroke: #000;
+      stroke-width: 1px;
+      fill: rgba(255, 255, 255, 0.8);
+    }
+  </style>
+</head>
+<body>
+<div id="chart"></div>
+<script>
+  const drawBubblePlot = async () => {
+
+    //Load CSVs
+    const [livingCosts, renewableEnergy, lifeExpectancy] = await Promise.all([
+      d3.csv("Cost_of_Living_and_Income_Extended.csv"),
+      d3.csv("global_renewable_energy_production.csv"),
+      d3.csv("life_expectancy.csv")
+    ]);
+
+    //Pull needed data from datasets
+    const totalEnergy = renewableEnergy.map(d => +d['TotalRenewableEnergy']);
+    const totalExpectancy = lifeExpectancy.map(d => {
+      const value = +d['Life Expectancy World Bank'];
+      // Replace zero or invalid values with null
+      return (value > 0) ? value : null;
+    });
+    const co2Values = lifeExpectancy.map(d => +d['CO2']);
+    const totalIncome = lifeExpectancy.map(d => d['IncomeGroup']);
+
+    //Merge the data arrays by index
+    const mergedData = totalEnergy.map((energy, index) => {
+      return {
+        TotalRenewableEnergy: energy,
+        LifeExpectancy: totalExpectancy[index],
+        CO2: co2Values[index],
+        IncomeGroup: totalIncome[index]
+      };})
+      //Need to filter out bad life expectancy values
+      .filter(d => d.LifeExpectancy !== null 
+      && !isNaN(d.LifeExpectancy) 
+      && d.LifeExpectancy > 0 
+      && !isNaN(d.TotalRenewableEnergy)
+    );
+
+    //Create chart dimensions
+    const width = 1200;
+    const height = 600;
+    const margins = { top: 50, right: 150, bottom: 100, left: 100 };
+    const chartWidth = width - margins.left - margins.right;
+    const chartHeight = height - margins.top - margins.bottom;
+
+    //Create SVG
+    const svg = d3.select("#chart")
+                  .append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+    const chartArea = svg.append('g')
+                         .attr('transform', `translate(${margins.left},${margins.top})`);
+
+    //Designate scales for axes
+    const xExtent = d3.extent(mergedData, d => d.TotalRenewableEnergy);
+    const xScale = d3.scaleLinear()
+                     .domain(xExtent)
+                     .range([0, chartWidth]);
+
+    const yExtent = d3.extent(mergedData, d => d.LifeExpectancy);
+    const yScale = d3.scaleLinear()
+                     .domain(yExtent)
+                     .range([chartHeight, 0]);
+
+    console.log(yExtent)
+
+    //Designate scales for size and color variables
+    const sizeExtent = d3.extent(mergedData, d => d.CO2);
+    const sizeScale = d3.scaleLinear()
+                        .domain(sizeExtent)
+                        .range([2, 15]);
+
+    const colorScale = d3.scaleOrdinal()
+                         .domain(mergedData.map(d => d.IncomeGroup))
+                         .range(["#DA3D2E", "#FFC845", "#1233A6", "#006F49"]);
+
+    //Append the axes
+    const leftAxis = d3.axisLeft(yScale);
+    svg.append("g")
+       .attr("class", "y axis")
+       .attr("transform", `translate(${margins.left}, ${margins.top})`)
+       .call(leftAxis);
+
+    const bottomAxis = d3.axisBottom(xScale);
+    svg.append("g")
+       .attr("class", "x axis")
+       .attr("transform", `translate(${margins.left}, ${height - margins.bottom})`)
+       .call(bottomAxis);
+
+    //Append the gridlines
+    const leftGridlines = d3.axisLeft(yScale).tickFormat('').tickSize(-chartWidth);
+    chartArea.append("g")
+       .attr("class", "y gridlines")
+       .call(leftGridlines);
+
+    const bottomGridlines = d3.axisBottom(xScale).tickFormat('').tickSize(-chartHeight).ticks(6);
+    chartArea.append("g")
+       .attr("class", "x gridlines")
+       .attr("transform", `translate(0, ${chartHeight})`)
+       .call(bottomGridlines);
+
+    //Add the y-axis label
+    svg.append("text")
+       .attr("class", "y label")
+       .attr("text-anchor", "middle")
+       .attr("font-weight", "bold")
+       .attr("x", margins.left / 2)
+       .attr("y", height / 2)
+       .attr("transform", `rotate(-90, ${margins.left / 2}, ${height / 2})`)
+       .text("Life Expectancy (Years)");
+
+    //Add the x-axis label
+    svg.append("text")
+       .attr("class", "x label")
+       .attr("text-anchor", "middle")
+       .attr("font-weight", "bold")
+       .attr("x", width / 2)
+       .attr("y", height - 30)
+       .text("Total Renewable Energy (GWh)");
+
+    //Append the circles
+    let circles = chartArea.selectAll("circle").data(mergedData)
+                           .enter()
+                           .append("circle")
+                           .attr("cx", d => xScale(d.TotalRenewableEnergy))
+                           .attr("cy", d => yScale(d.LifeExpectancy))
+                           .attr("r", d => sizeScale(d.CO2) * 2)
+                           .attr("fill", d => colorScale(d.IncomeGroup))
+                           .attr("opacity", 0.7);
+
+    //Create legend
+    const legendWidth = (width - margins.right - margins.left) * 0.14;
+    const legendHeight = 250;
+    const legendX = width - margins.right + 10;
+    const legendY = margins.top;
+
+    //Legend background box
+    const legendBox = svg.append("rect")
+                         .attr("x", legendX)
+                         .attr("y", legendY)
+                         .attr("width", legendWidth)
+                         .attr("height", legendHeight)
+                         .attr("class", "legend-box")
+                         .style("fill", "white")
+                         .style("stroke", "black");
+
+    //Legend title for Income Groups
+    svg.append("text")
+        .attr("x", legendX + legendWidth / 2)
+        .attr("y", legendY + 20)
+        .attr("text-anchor", "middle")
+        .attr("font-weight", "bold")
+        .text("Income Groups");
+
+    //Append income group color indicators
+    svg.append("circle")
+       .attr("cx", legendX + 20) 
+       .attr("cy", legendY + 20 + 1 * 25)
+       .attr("r", 10)
+       .attr("fill", "#006F49");
+
+    svg.append("text")
+       .attr("x", legendX + 40) 
+       .attr("y", legendY + 20 + 1 * 25) 
+       .attr("font-size", "12px")
+       .attr("alignment-baseline", "middle")
+       .text("High Income");
+       
+    svg.append("circle")
+      .attr("cx", legendX + 20) 
+      .attr("cy", legendY + 20 + 4 * 25)
+      .attr("r", 10)
+      .attr("fill", "#DA3D2E");
+
+    svg.append("text")
+       .attr("x", legendX + 40) 
+       .attr("y", legendY + 20 + 4 * 25) 
+       .attr("font-size", "12px")
+       .attr("alignment-baseline", "middle")
+       .text("Low Income");
+
+    svg.append("circle")
+       .attr("cx", legendX + 20) 
+       .attr("cy", legendY + 20 + 3 * 25)
+       .attr("r", 10)
+       .attr("fill", "#ffc845");
+
+    svg.append("text")
+       .attr("x", legendX + 40) 
+       .attr("y", legendY + 20 + 3 * 25) 
+       .attr("font-size", "12px")
+       .attr("alignment-baseline", "middle")
+       .text("Low-mid Income");
+
+    svg.append("circle")
+       .attr("cx", legendX + 20) 
+       .attr("cy", legendY + 20 + 2 * 25)
+       .attr("r", 10)
+       .attr("fill", "#1233A6");
+
+    svg.append("text")
+       .attr("x", legendX + 40) 
+       .attr("y", legendY + 20 + 2 * 25) 
+       .attr("font-size", "12px")
+       .attr("alignment-baseline", "middle")
+       .text("Upper-mid Income");
+
+    //Append CO2 circle radius indicators
+    svg.append("text")
+        .attr("x", legendX + legendWidth / 2)
+        .attr("y", legendY + 20 + 5.5 * 25)
+        .attr("text-anchor", "middle")
+        .attr("font-weight", "bold")
+        .text("CO2 Value (kT)");
+
+    svg.append("circle")
+       .attr("cx", legendX + 13) 
+       .attr("cy", legendY + 5 + 8 * 24)
+       .attr("r", 6)
+       .style("stroke", "black")
+       .style("stroke-width", 1.5)
+       .attr("fill", "none");
+
+    svg.append("circle")
+       .attr("cx", legendX + 46) 
+       .attr("cy", legendY + 5 + 8 * 24)
+       .attr("r", 16)
+       .style("stroke", "black")
+       .style("stroke-width", 1.5)
+       .attr("fill", "none");
+
+    svg.append("circle")
+       .attr("cx", legendX + 99) 
+       .attr("cy", legendY + 5 + 8 * 24)
+       .attr("r", 26)
+       .style("stroke", "black")
+       .style("stroke-width", 1.5)
+       .attr("fill", "none");
+
+    svg.append("text")
+       .attr("x", legendX + 12) 
+       .attr("y", legendY + 48 + 8 * 24)
+       .attr("font-size", "12px")
+       .attr("alignment-baseline", "middle")
+       .text("40.369 kT - 81.417 kT");
+  }
+
+  drawBubblePlot();
+</script>
+</body>
+</html>
