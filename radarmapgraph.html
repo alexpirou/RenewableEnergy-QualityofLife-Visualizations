@@ -79,7 +79,6 @@
     Promise.all([
         d3.json("./data/global.geo.json"),
         d3.csv("./data/Combined_cleaned_reduced.csv"),
-        d3.csv("./data/regional_cost_of_living.csv")
     ]).then(([geoData, combinedData, costOfLiving]) => {
         processData(combinedData, costOfLiving);
         drawMap(geoData);
