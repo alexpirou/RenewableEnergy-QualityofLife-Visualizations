@@ -9,11 +9,14 @@
   body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(255, 255, 255);
-    color: rgb(189, 189, 189);
+    color: rgb(0, 0, 0);
     margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  p {
+    width: 75%;
   }
 
   #radarChart #map{
@@ -43,8 +46,7 @@
     border-radius: 4px;
     pointer-events: none;
     font-size: 14px;
-    display: none; /* From second code block */
-    visibility: hidden; /* From first code block */
+    display: none; 
   }
 
   #graph-description {
@@ -104,26 +106,23 @@
     padding: 5px 10px;
     font-size: 14px;
   }
+
+  p {
+    color: #000;
+  }
   </style>
 </head>
 <body>
-  <h2>CO2 Production, Wealth, and Renewable Energy Use Comparison</h2>
-  <div id="bubble-chart"></div>
+  <h1>Renewable Energy and Quality of Life Correlation</h1>
+  <p>Contributors: Alexander Pirouznia, Carl Chen, Simon Tian, Jason Lee</p>
 
-  <div id="graph-description">
-      <h2>Time Series Line Graph</h2>
-      <p class= "subheader">Analyzing the Relationship Between Life Expectancy, CO2 Emissions, and Global Annual Renewable Energy
-      Production (2000–2020)</p>
-  </div>
-  <div id="chart"></div>
-  <div class="tooltip" id="tooltip"></div>
+  <p>This project combines multiple datasets to create a comprehensive visualization of global socioeconomic and environmental trends. The data sources include the Regional Cost of Living Analysis, the World Bank’s Life Expectancy and Socioeconomic Dataset, and Global Renewable Energy Production Data. These datasets provide critical insights into six key indicators: renewable energy production, life expectancy, healthcare spending, CO₂ emissions, cost of living, and average income. The data spans multiple years, enabling temporal and spatial analyses of trends and correlations across countries.</p>
 
-  <h2>Renewable Energy Sources by Country</h2>
-  <div id="container">
-      <svg id="barchart" height="600" width="900" style="background: #F5F5F5;"></svg>
-  </div>
-  <div id="button-bar"></div>
-  <div id="tooltip" class="tooltip"></div>
+  <h2>Dataset Analysis</h2>
+  <p><a href="https://www.kaggle.com/datasets/heidarmirhajisadati/regional-cost-of-living-analysis">Regional Cost of Living Analysis:</a> This dataset includes data on cost of living, which provides insights into the affordability of goods and services in different countries. It also includes information about average monthly incomes, enabling a comparison of economic well being.<p>
+  <p><a href="https://www.kaggle.com/datasets/mjshri23/life-expectancy-and-socio-economic-world-bank">Expectancy and Socioeconomic Data from the World Bank:</a> This dataset highlights key socioeconomic indicators, including average life expectancy, healthcare expenditure, and CO₂ emissions. These metrics are crucial for understanding the quality of life and environmental impact across regions.<p>
+  <p><a href="https://www.kaggle.com/datasets/ahmedgaitani/global-renewable-energy">Global Renewable Energy Production Data:</a> This dataset offers a breakdown of renewable energy production by type (e.g., solar, wind, hydro) and total output per country. It serves as a critical metric for evaluating the adoption of sustainable energy practices and their socioeconomic implications.<p>
+  <p>To ensure data quality, extensive preprocessing was conducted. Missing values were addressed, invalid entries were removed, and metrics were normalized where appropriate. The datasets were merged into a cohesive format for analysis, enabling consistent comparisons across countries and years.</p>
 
   <h2>Interactive Global Radar Chart</h2>
   <div id="map-container">
@@ -136,7 +135,57 @@
     <span id="yearDisplay">2000</span>
   </div>
   <div class="tooltip" id="tooltip"></div>
+  <p>The world map serves as the central visualization for exploring geographically distributed data. Designed using D3.js and GeoJSON, the map provides an intuitive and spatially contextualized view of global data, allowing users to identify patterns across countries effectively. Countries with available data are highlighted in teal, while those without data are displayed in a muted gray, ensuring a clear visual distinction. The map adopts a clean dark theme with a dark gray background and white country boundaries to enhance visibility and reduce visual clutter, drawing attention to the highlighted countries.
+  Interactivity plays a key role in the map's design. When users hover over a country, a tooltip displays the country name, providing immediate feedback. This interactive element ensures users can easily identify and explore regions of interest. The hover interaction dynamically connects the map to other visualizations, allowing for seamless updates and reinforcing the spatial relevance of the data. The choice of a world map aligns with the goal of presenting global data in an engaging and accessible way, enabling users to compare information across countries while maintaining a strong focus on usability and visual clarity. By combining interactivity with a clean, dark-themed design, the map delivers a powerful and engaging platform for global data exploration.
+  </p>
+  <p>The radar chart was chosen as a complementary visualization to the world map, providing an intuitive and compact way to display multidimensional data for each country. By focusing on six key indicators—Renewable Energy, Life Expectancy, Healthcare Spending, CO₂ Emissions, Cost of Living, and GDP per Capita—the radar chart allows users to compare multiple metrics simultaneously. This makes it particularly effective for visualizing categorical or grouped data where traditional charts, such as bar or line charts, might struggle to convey relationships and trends clearly. The radar chart helps users quickly identify strengths, weaknesses, and patterns within a country’s data across all six dimensions.
+  Interactivity enhances the radar chart’s utility, as it dynamically updates based on the hover interaction on the world map. When a user selects or hovers over a country, the radar chart seamlessly reflects that country’s data, ensuring a cohesive and responsive user experience. This connection between the world map and radar chart enables users to contextualize the selected country’s performance in a visually appealing manner. The chart employs a clean dark theme that matches the overall design, with light blue fill and blue stroke for the data area. Gridlines and axes are styled in subtle gray to provide structure without overwhelming the visualization. Smooth transitions are applied when updating the radar chart, ensuring a polished and fluid user experience.
+  Overall, the radar chart was implemented to offer a clear, engaging, and efficient way to compare multidimensional data. Its design and interactivity ensure that users can quickly understand a country’s performance across multiple indicators while maintaining a strong visual connection to the world map.
+  </p>
+  <h2>CO2 Production, Wealth, and Renewable Energy Use Comparison</h2>
+  <div id="bubble-chart"></div>
+  <p>This visualization reveals insights into the relationships between wealth, human development, and environmental impact. Life expectancy emerges as a leading indicator of economic prosperity, with a clear gradient across income levels. High-income regions consistently demonstrate life expectancies exceeding 70 years, in contrast to lower-income areas where life expectancy falls below 60 years.</p>
 
+  <p>Rather than following a linear progression tied to income, renewable energy usage clusters most densely in the mid-range, spanning approximately 2,000 to 3,500 GWh. This suggests a more nuanced relationship between economic development and sustainable energy adoption, challenging assumptions about wealth and green energy implementation.</p>
+
+  <p>The carbon emissions profile presents another layer of complexity. CO2 levels exhausted from fossil fuel consumption display the most variation at higher income levels, with an amplified footprint compared to lower-income regions. While lower-income areas contribute a minimal carbon emissions signature, the data highlights the disproportionate environmental impact of economies with large wealth gaps.</p>
+
+  <div id="graph-description">
+      <h2>Time Series Line Graph</h2>
+  </div>
+  <div id="chart"></div>
+  <div class="tooltip" id="tooltip"></div>
+  <p>The visualization is a time-series line chart comparing CO2 emissions, average life expectancy, and global annual renewable energy production from 2000 to 2020.The x-axis represents time, allowing viewers to track changes over the 20-year period, while the y-axes represent the three variables. The left y-axis is shared between life expectancy and CO2 emissions to conserve space and simplify interpretation, with color coding ensuring clear differentiation. Renewable energy production is placed on a separate right y-axis due to its much larger scale, in order to prevent distortion and maintain accuracy.  </p>
+
+  <p>Color is a key visual tool, with each variable assigned a distinct and meaningful shade: red for CO2 emissions, emphasizing urgency; blue for life expectancy, symbolizing health; and green for renewable energy, representing environmental progress. Trends are primarily represented by lines, which allow for smooth tracking over time, while circles mark individual data points to enhance precision and make specific values easily identifiable. Linear scales are used for all axes to preserve proportional relationships and ensure trends are intuitive to interpret.</p>
+
+  <p>The interactive elements of the visualization focus on providing clarity and enhancing user engagement through the use of tooltips and interactive data points. Tooltips are a central feature, appearing when users hover over individual data points along the lines. These tooltips display detailed information, such as the exact values for CO2 emissions, life expectancy, or renewable energy production for a given year. This design decision allows viewers to explore the chart with greater precision, offering immediate, contextual feedback without cluttering the overall visualization. Tooltips are positioned intuitively and styled to remain unobtrusive, ensuring they provide value without overwhelming the user.</p>
+
+  <p>The inclusion of data point markers—represented as circles along the lines—also enhances discoverability and usability. These markers signal to users that the chart is interactive and provide clear targets for hovering. This interaction choice is simple, familiar, and effective for enabling deeper exploration while keeping the visualization clean and focused. By limiting interactions to hover-based tooltips, the design avoids unnecessary complexity and ensures that the chart remains approachable for users of all skill levels.</p>
+
+  <p>Examining the trends of CO2 emissions, global renewable energy production, and life expectancy from 2000 to 2020 reveals a combination of progress and inconsistency. Life expectancy has steadily increased over the two decades, reflecting advancements in healthcare, living conditions, and overall development. However, this positive trajectory contrasts with the persistently high CO2 emissions, which have shown little meaningful decline. This suggests that while human well-being has improved, it continues to be supported by fossil fuel reliance, highlighting the environmental costs of global growth.</p>
+
+  <p>The trend in renewable energy production was particularly unexpected. Given the urgency of the climate crisis and the global emphasis on sustainability, I anticipated consistent growth over the years. Instead, the data reveals large fluctuations, with significant increases, such as from 2002 to 2003, followed by notable declines, especially between 2009 and 2011. By 2020, production had even fallen below 2000 levels, suggesting an overall lack of sustained progress. These inconsistencies may be due to the weather-dependent nature of renewable energy or variability in infrastructure investment and policy support. Together, these trends show that while life expectancy has seen steady improvement, renewable energy production has not followed a clear upward trajectory, and CO2 emissions remain unchanged, reflecting a complex relationship between development and environmental impact.</p>
+
+  <h2>Renewable Energy Sources by Country</h2>
+  <div id="container">
+      <svg id="barchart" height="600" width="900" style="background: #ffffff;"></svg>
+  </div>
+  <div id="button-bar"></div>
+  <div id="tooltip" class="tooltip"></div>
+  <p>Using the interactive year buttons, we can see that there really is no specific trend between countries or the renewable energy sector with heavy fluctuations from the years 2000 to 2023. There is no dominant country in renewable energy production, the different sectors themselves (wind, solar, hydro, other) waver on a year to year basis. However, we can see that overall renewable energy production is tending to grow on a year by year basis. We believe these fluctuations are testament to the unpredictability of weather that may impede solar, hydro, or wind development. For example, solar production is contingent on there being ample sunlight, and wind production is contingent on there being high wind speeds. Both are unpredictable and uncontrollable.</p>
+
+  <p>If we narrow down our analysis to the last five years, we can analyze a smaller subset that is more directly applicable to modern days. We see within the last five years, that wind and hydro energy usually take up the bulk of renewable energy production. In addition, solar production has been generally increasing, besides for a lull in 2021. Wind energy too, has seen steady growth. Hydro, is perhaps the most stable, because it depends the least on the weather due to manmade dams and aqueducts. However, even this too may be reliant on weather forces affecting rain or drought.  Finally, other renewable energies round it out, usually providing a small subset within production due to their gradual diversification within the energy sector mix. 
+  Within a country by country basis, we notice several trends. For one, there is no dominating country in total renewable energy production, although France seems to consistently output high levels of production. All countries seem to perform better than others in specific sectors, and even then that changes on a year to year basis. There are no dominant performances, where a country has led production in all four categories.  Furthermore, China consistently outputs high levels of hydro power production, while Australia consistently outputs high levels of wind power production. </p>
+
+  <p>Because of this, if there was one notable thing that could be improved from the visualization it would be the addition of a total energy production bar (with all the countries combined). This could be helpful for the larger picture of each year, to show growth in renewable energy in the grander scope and not only on a country by country basis. This could help a user visualize the larger picture more immediately throughout the years, whereas separating by country may provide a too muddled approach that is hard to grasp the overall changes. </p>
+
+  <h2>Observations and Conclusion</h2>
+  <p>Renewable Energy and Socioeconomic Indicators: Countries with higher adoption of renewable energy sources often exhibit better socioeconomic indicators, such as higher life expectancy and average income, coupled with lower CO₂ emissions.</p>
+  <p>Low-income regions often face challenges in renewable energy adoption, with corresponding lower socioeconomic outcomes.</p>
+  <p>Temporal Progress: Over the years, many countries have made significant strides in renewable energy adoption, which often correlates with improvements in life expectancy and reductions in CO₂ emissions.</p>
+  <p>Sustainability Challenges: Some regions with high renewable energy production still face challenges in socioeconomic indicators, highlighting the complexity of achieving sustainability.</p>
+  <p>By integrating these insights into an interactive platform, the project provides a powerful tool for exploring global trends and their implications. Policymakers, researchers, and the public can use these visualizations to better understand the interconnectedness of socioeconomic factors and environmental sustainability, and to identify opportunities for improvement globally.</p>
   <script>
     //Radar Graph
     const drawRadarChart = (function () {
@@ -198,7 +247,7 @@
             .join("path")
             .attr("d", path)
             .attr("fill", d => countries.has(d.properties.name) ? "#c7f5ff" : "#444")
-            .attr("stroke", "white")
+            .attr("stroke", "black")
             .attr("class", "country")
             .on("mouseover", (event, d) => {
                 const country = d.properties.name;
@@ -275,7 +324,7 @@
                 .attr("x", x * 1.1)
                 .attr("y", y * 1.1)
                 .style("text-anchor", "middle")
-                .style("fill", "white")
+                .style("fill", "black")
                 .text(param);
         });
     
@@ -507,7 +556,7 @@
         .attr("y", legendY + 20 + 2 * 25) 
         .attr("font-size", "12px")
         .attr("alignment-baseline", "middle")
-        .text("Upper-mid Income");
+        .text("Up-mid Income");
 
       //Append CO2 circle radius indicators
       svg.append("text")
