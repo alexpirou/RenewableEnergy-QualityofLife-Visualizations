@@ -14,9 +14,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 20px;
+    line-height: 1.6;
   }
   p {
-    width: 75%;
+    width: 75%; 
+    margin-top: 5px;
+    margin-bottom: 5px;
+    line-height: 1.5;
   }
 
   #radarChart #map{
@@ -26,6 +31,16 @@
   h1 {
     margin-top: 20px;
   }
+
+  h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+  h3 {
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
 
   .slider-container {
     margin-top: 10px;
@@ -38,6 +53,19 @@
   }
 
   .tooltip {
+  position: absolute;
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 1;  /* Changed from 0 */
+  visibility: visible;  /* Changed from none */
+  transition: opacity 0.2s ease-in-out;
+}
+
+  .barchartTooltip {
     position: absolute;
     text-align: center;
     background: white;
@@ -47,10 +75,11 @@
     pointer-events: none;
     font-size: 14px;
     display: none; 
-  }
+}
 
   #graph-description {
-    margin-left: 200px;
+    margin-left: 0px;
+    text-align: center;
   }
 
   .line {
@@ -98,8 +127,12 @@
   }
 
   #button-bar {
-    margin-top: 10px;
-  }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    gap: 5px; 
+    max-width: 800px; 
+}
 
   button {
     margin-right: 5px;
@@ -114,20 +147,40 @@
 </head>
 <body>
   <h1>Renewable Energy and Quality of Life Correlation</h1>
-  <p>Contributors: Alexander Pirouznia, Carl Chen, Simon Tian, Jason Lee</p>
+  <h3>Contributors: Alexander Pirouznia, Carl Chen, Simon Tian, Jason Lee</h3>
 
-  <p>This project combines multiple datasets to create a comprehensive visualization of global socioeconomic and environmental trends. The data sources include the Regional Cost of Living Analysis, the World Bank’s Life Expectancy and Socioeconomic Dataset, and Global Renewable Energy Production Data. These datasets provide critical insights into six key indicators: renewable energy production, life expectancy, healthcare spending, CO₂ emissions, cost of living, and average income. The data spans multiple years, enabling temporal and spatial analyses of trends and correlations across countries.</p>
+  <p>In this project, we combined multiple datasets to create a series of visualization of global socioeconomic and environmental trends.
+     We used three data sources, including the Regional Cost of Living Analysis, the World Bank’s Life Expectancy and Socioeconomic 
+     Dataset, and Global Renewable Energy Production Data. These datasets provided useful insights into six key indicators: renewable 
+     energy production, life expectancy, healthcare spending, CO₂ emissions, cost of living, and average income. The data spans multiple
+      years, enabling temporal and spatial analyses of trends and correlations across countries.</p>
 
   <h2>Dataset Analysis</h2>
-  <p><a href="https://www.kaggle.com/datasets/heidarmirhajisadati/regional-cost-of-living-analysis">Regional Cost of Living Analysis:</a> This dataset includes data on cost of living, which provides insights into the affordability of goods and services in different countries. It also includes information about average monthly incomes, enabling a comparison of economic well being.<p>
-  <p><a href="https://www.kaggle.com/datasets/mjshri23/life-expectancy-and-socio-economic-world-bank">Expectancy and Socioeconomic Data from the World Bank:</a> This dataset highlights key socioeconomic indicators, including average life expectancy, healthcare expenditure, and CO₂ emissions. These metrics are crucial for understanding the quality of life and environmental impact across regions.<p>
-  <p><a href="https://www.kaggle.com/datasets/ahmedgaitani/global-renewable-energy">Global Renewable Energy Production Data:</a> This dataset offers a breakdown of renewable energy production by type (e.g., solar, wind, hydro) and total output per country. It serves as a critical metric for evaluating the adoption of sustainable energy practices and their socioeconomic implications.<p>
-  <p>To ensure data quality, extensive preprocessing was conducted. Missing values were addressed, invalid entries were removed, and metrics were normalized where appropriate. The datasets were merged into a cohesive format for analysis, enabling consistent comparisons across countries and years.</p>
+
+  <p><a href="https://www.kaggle.com/datasets/heidarmirhajisadati/regional-cost-of-living-analysis">Regional Cost of Living Analysis:</a> 
+    This dataset reflects the cost of living in each country quantitatively, which provides insights into the affordability of goods and 
+    services in different countries. It also includes information about average monthly incomes, which enables us to consider a comparison
+     of economic well being.<p>
+
+  <p><a href="https://www.kaggle.com/datasets/mjshri23/life-expectancy-and-socio-economic-world-bank">Expectancy and Socioeconomic Data 
+    from the World Bank:</a> This dataset provided the team several socioeconomic indicators for the analysis, including average life 
+    expectancy, healthcare expenditure, and CO₂ emissions. These metrics are important for understanding the quality of life and 
+    environmental impact across different regions, which can be reflected in the visualizations.<p>
+
+  <p><a href="https://www.kaggle.com/datasets/ahmedgaitani/global-renewable-energy">Global Renewable Energy Production Data:</a> This 
+    dataset offers a breakdown of renewable energy production by type, including solar, wind, hydro, etc., and the total output per 
+    country. The dataset will help us to understand and evaluate the adoption of sustainable energy practices and their socioeconomic 
+    implications.
+    <p>
+  
+    <p>To ensure data quality, the team conducted preprocessing. For instance, some of the methods we used include filling-in the missing
+       values, removing invalid entries, and metrics normalization. The three datasets were merged into a cohesive format for analysis, 
+       especially for the radar diagram. This also allows consistent comparisons across countries and years.</p>
 
   <h2>Interactive Global Radar Chart</h2>
   <div id="map-container">
-  <svg id="map" width="800" height="500"></svg>
-  <svg id="radarChart" width="500" height="500"></svg>
+  <svg id="map" width="600" height="400"></svg>
+  <svg id="radarChart" width="400" height="400"></svg>
   </div>
   <div class="slider-container">
     <label for="yearSlider">Year:</label>
@@ -135,63 +188,160 @@
     <span id="yearDisplay">2000</span>
   </div>
   <div class="tooltip" id="tooltip"></div>
-  <p>The world map serves as the central visualization for exploring geographically distributed data. Designed using D3.js and GeoJSON, the map provides an intuitive and spatially contextualized view of global data, allowing users to identify patterns across countries effectively. Countries with available data are highlighted in teal, while those without data are displayed in a muted gray, ensuring a clear visual distinction. The map adopts a clean dark theme with a dark gray background and white country boundaries to enhance visibility and reduce visual clutter, drawing attention to the highlighted countries.
-  Interactivity plays a key role in the map's design. When users hover over a country, a tooltip displays the country name, providing immediate feedback. This interactive element ensures users can easily identify and explore regions of interest. The hover interaction dynamically connects the map to other visualizations, allowing for seamless updates and reinforcing the spatial relevance of the data. The choice of a world map aligns with the goal of presenting global data in an engaging and accessible way, enabling users to compare information across countries while maintaining a strong focus on usability and visual clarity. By combining interactivity with a clean, dark-themed design, the map delivers a powerful and engaging platform for global data exploration.
-  </p>
-  <p>The radar chart was chosen as a complementary visualization to the world map, providing an intuitive and compact way to display multidimensional data for each country. By focusing on six key indicators—Renewable Energy, Life Expectancy, Healthcare Spending, CO₂ Emissions, Cost of Living, and GDP per Capita—the radar chart allows users to compare multiple metrics simultaneously. This makes it particularly effective for visualizing categorical or grouped data where traditional charts, such as bar or line charts, might struggle to convey relationships and trends clearly. The radar chart helps users quickly identify strengths, weaknesses, and patterns within a country’s data across all six dimensions.
-  Interactivity enhances the radar chart’s utility, as it dynamically updates based on the hover interaction on the world map. When a user selects or hovers over a country, the radar chart seamlessly reflects that country’s data, ensuring a cohesive and responsive user experience. This connection between the world map and radar chart enables users to contextualize the selected country’s performance in a visually appealing manner. The chart employs a clean dark theme that matches the overall design, with light blue fill and blue stroke for the data area. Gridlines and axes are styled in subtle gray to provide structure without overwhelming the visualization. Smooth transitions are applied when updating the radar chart, ensuring a polished and fluid user experience.
-  Overall, the radar chart was implemented to offer a clear, engaging, and efficient way to compare multidimensional data. Its design and interactivity ensure that users can quickly understand a country’s performance across multiple indicators while maintaining a strong visual connection to the world map.
+  <div id="barchartTooltip" class="barchartTooltip"></div>
+
+  <p>The world map is the central visualization for illustrating geographically distributed data. The map provides an intuitive and 
+    spatially contextualized view of the global data we have, allowing users to identify patterns across countries effectively. Countries
+     with available data are highlighted in teal color, while those without data are muted with  a background gray color, which ensures 
+     a good visual distinction.  </p>
+  
+  <p>The interactivity is also a key element of the map. When users hover over a country, a tooltip displays the country name as feedback.
+     This interactive element ensures users can identify and explore the precise countries of interest. The hover interaction connects 
+     the map to the radar visualization, which reinforces the spatial relevance of the data. The user can also click on the country of 
+     interest to maintain their selection, while examining other countries which they might be interested in next. </p>
+  
+  <p>On the other hand, the radar chart is a complementary visualization to the world map, providing an intuitive and compact way to 
+    display multidimensional data for each country. The radar chart allows users to compare multiple metrics simultaneously by focusing 
+    on six key indicators: Renewable Energy, Life Expectancy, Healthcare Spending, CO₂ Emissions, Cost of Living, and Average Income. 
+    This makes it effective for visualizing categorical or grouped data where traditional charts might struggle to display relationships 
+    and trends clearly. Our radar chart can help users quickly identify strengths, weaknesses, and patterns within a country’s data 
+    across all six dimensions.
+
+  <p>Since the displayed data is dynamically updated based on the hover interaction on the world map, this interactivity greatly 
+    increased the radar chart’s utility as well. When a user selects or hovers over a country, the radar chart will reflect that 
+    country’s corresponding data, which is a great user experience. This connection between the world map and radar chart also enables 
+    users to contextualize the selected country’s performance in a visually appealing manner. </p>
+
+  <p>The chart uses a clean white theme that matches the overall design, with light blue fill and blue stroke for the data visualization.
+     The gridlines and axes are colored in subtle gray to provide visual aid when assessing the data points without overwhelming the 
+     visualization. Additionally, the team applied smooth transitions when updating the radar chart to ensure a polished and fluid user 
+     experience.</p>
+
+  <p>Finally, a year-slider has been added to the bottom of the world map / radar chart to skim through different years quickly and 
+    efficiently. This feature allows the users to accurately select the year of interest, where it also allows the user to drag the 
+    slider left and right, to see the change in a particular trend in the radar chart. This is a practical addition when combined with 
+    the radar chart, as it can help the user to visualize the data trend more easily. </p>
+
   </p>
   <h2>CO2 Production, Wealth, and Renewable Energy Use Comparison</h2>
   <div id="bubble-chart"></div>
-  <p>This visualization reveals insights into the relationships between wealth, human development, and environmental impact. Life expectancy emerges as a leading indicator of economic prosperity, with a clear gradient across income levels. High-income regions consistently demonstrate life expectancies exceeding 70 years, in contrast to lower-income areas where life expectancy falls below 60 years.</p>
+  <p>This visualization reveals insights into the relationships between wealth, human development, and environmental impact. Life 
+    expectancy emerges as a leading indicator of economic prosperity, with a clear gradient across income levels. High-income regions 
+    consistently demonstrate life expectancies exceeding 70 years, in contrast to lower-income areas where life expectancy falls below 
+    60 years.</p>
 
-  <p>Rather than following a linear progression tied to income, renewable energy usage clusters most densely in the mid-range, spanning approximately 2,000 to 3,500 GWh. This suggests a more nuanced relationship between economic development and sustainable energy adoption, challenging assumptions about wealth and green energy implementation.</p>
+  <p>Rather than following a linear progression tied to income, renewable energy usage clusters most densely in the mid-range, spanning 
+    approximately 2,000 to 3,500 GWh. This suggests a more nuanced relationship between economic development and sustainable energy 
+    adoption, challenging assumptions about wealth and green energy implementation.</p>
 
-  <p>The carbon emissions profile presents another layer of complexity. CO2 levels exhausted from fossil fuel consumption display the most variation at higher income levels, with an amplified footprint compared to lower-income regions. While lower-income areas contribute a minimal carbon emissions signature, the data highlights the disproportionate environmental impact of economies with large wealth gaps.</p>
+  <p>The carbon emissions profile presents another layer of complexity. CO2 levels exhausted from fossil fuel consumption display the 
+    most variation at higher income levels, with an amplified footprint compared to lower-income regions. While lower-income areas 
+    contribute a minimal carbon emissions signature, the data highlights the disproportionate environmental impact of economies with 
+    large wealth gaps.</p>
 
   <div id="graph-description">
-      <h2>Time Series Line Graph</h2>
+  <h2>Time Series Line Graph</h2>
   </div>
+
   <div id="chart"></div>
-  <div class="tooltip" id="tooltip"></div>
-  <p>The visualization is a time-series line chart comparing CO2 emissions, average life expectancy, and global annual renewable energy production from 2000 to 2020.The x-axis represents time, allowing viewers to track changes over the 20-year period, while the y-axes represent the three variables. The left y-axis is shared between life expectancy and CO2 emissions to conserve space and simplify interpretation, with color coding ensuring clear differentiation. Renewable energy production is placed on a separate right y-axis due to its much larger scale, in order to prevent distortion and maintain accuracy.  </p>
+  <div class="tooltip" id="linetooltip"></div>
+  <p>The visualization is a time-series line chart comparing CO2 emissions, average life expectancy, and global annual renewable energy 
+    production from 2000 to 2020.The x-axis represents time, allowing viewers to track changes over the 20-year period, while the y-axes 
+    represent the three variables. The left y-axis is shared between life expectancy and CO2 emissions to conserve space and simplify 
+    interpretation, with color coding ensuring clear differentiation. Renewable energy production is placed on a separate right y-axis 
+    due to its much larger scale, in order to prevent distortion and maintain accuracy.  </p>
 
-  <p>Color is a key visual tool, with each variable assigned a distinct and meaningful shade: red for CO2 emissions, emphasizing urgency; blue for life expectancy, symbolizing health; and green for renewable energy, representing environmental progress. Trends are primarily represented by lines, which allow for smooth tracking over time, while circles mark individual data points to enhance precision and make specific values easily identifiable. Linear scales are used for all axes to preserve proportional relationships and ensure trends are intuitive to interpret.</p>
+  <p>Color is a key visual tool, with each variable assigned a distinct and meaningful shade: red for CO2 emissions, emphasizing urgency;
+     blue for life expectancy, symbolizing health; and green for renewable energy, representing environmental progress. Trends are 
+     primarily represented by lines, which allow for smooth tracking over time, while circles mark individual data points to enhance 
+     precision and make specific values easily identifiable. Linear scales are used for all axes to preserve proportional relationships 
+     and ensure trends are intuitive to interpret.</p>
 
-  <p>The interactive elements of the visualization focus on providing clarity and enhancing user engagement through the use of tooltips and interactive data points. Tooltips are a central feature, appearing when users hover over individual data points along the lines. These tooltips display detailed information, such as the exact values for CO2 emissions, life expectancy, or renewable energy production for a given year. This design decision allows viewers to explore the chart with greater precision, offering immediate, contextual feedback without cluttering the overall visualization. Tooltips are positioned intuitively and styled to remain unobtrusive, ensuring they provide value without overwhelming the user.</p>
+  <p>The interactive elements of the visualization focus on providing clarity and enhancing user engagement through the use of tooltips 
+    and interactive data points. Tooltips are a central feature, appearing when users hover over individual data points along the lines. 
+    These tooltips display detailed information, such as the exact values for CO2 emissions, life expectancy, or renewable energy 
+    production for a given year. This design decision allows viewers to explore the chart with greater precision, offering immediate, 
+    contextual feedback without cluttering the overall visualization. Tooltips are positioned intuitively and styled to remain 
+    unobtrusive, ensuring they provide value without overwhelming the user.</p>
 
-  <p>The inclusion of data point markers—represented as circles along the lines—also enhances discoverability and usability. These markers signal to users that the chart is interactive and provide clear targets for hovering. This interaction choice is simple, familiar, and effective for enabling deeper exploration while keeping the visualization clean and focused. By limiting interactions to hover-based tooltips, the design avoids unnecessary complexity and ensures that the chart remains approachable for users of all skill levels.</p>
+  <p>The inclusion of data point markers—represented as circles along the lines—also enhances discoverability and usability. These 
+    markers signal to users that the chart is interactive and provide clear targets for hovering. This interaction choice is simple, 
+    familiar, and effective for enabling deeper exploration while keeping the visualization clean and focused. By limiting interactions 
+    to hover-based tooltips, the design avoids unnecessary complexity and ensures that the chart remains approachable for users of all 
+    skill levels.</p>
 
-  <p>Examining the trends of CO2 emissions, global renewable energy production, and life expectancy from 2000 to 2020 reveals a combination of progress and inconsistency. Life expectancy has steadily increased over the two decades, reflecting advancements in healthcare, living conditions, and overall development. However, this positive trajectory contrasts with the persistently high CO2 emissions, which have shown little meaningful decline. This suggests that while human well-being has improved, it continues to be supported by fossil fuel reliance, highlighting the environmental costs of global growth.</p>
+  <p>Examining the trends of CO2 emissions, global renewable energy production, and life expectancy from 2000 to 2020 reveals a 
+    combination of progress and inconsistency. Life expectancy has steadily increased over the two decades, reflecting advancements in 
+    healthcare, living conditions, and overall development. However, this positive trajectory contrasts with the persistently high CO2 
+    emissions, which have shown little meaningful decline. This suggests that while human well-being has improved, it continues to be 
+    supported by fossil fuel reliance, highlighting the environmental costs of global growth.</p>
 
-  <p>The trend in renewable energy production was particularly unexpected. Given the urgency of the climate crisis and the global emphasis on sustainability, I anticipated consistent growth over the years. Instead, the data reveals large fluctuations, with significant increases, such as from 2002 to 2003, followed by notable declines, especially between 2009 and 2011. By 2020, production had even fallen below 2000 levels, suggesting an overall lack of sustained progress. These inconsistencies may be due to the weather-dependent nature of renewable energy or variability in infrastructure investment and policy support. Together, these trends show that while life expectancy has seen steady improvement, renewable energy production has not followed a clear upward trajectory, and CO2 emissions remain unchanged, reflecting a complex relationship between development and environmental impact.</p>
+  <p>The trend in renewable energy production was particularly unexpected. Given the urgency of the climate crisis and the global 
+    emphasis on sustainability, I anticipated consistent growth over the years. Instead, the data reveals large fluctuations, with 
+    significant increases, such as from 2002 to 2003, followed by notable declines, especially between 2009 and 2011. By 2020, production
+     had even fallen below 2000 levels, suggesting an overall lack of sustained progress. These inconsistencies may be due to the 
+     weather-dependent nature of renewable energy or variability in infrastructure investment and policy support. Together, these 
+     trends show that while life expectancy has seen steady improvement, renewable energy production has not followed a clear upward 
+     trajectory, and CO2 emissions remain unchanged, reflecting a complex relationship between development and environmental impact.</p>
 
   <h2>Renewable Energy Sources by Country</h2>
   <div id="container">
-      <svg id="barchart" height="600" width="900" style="background: #ffffff;"></svg>
+      <svg id="barchart" height="500" width="800" style="background: #ffffff;"></svg>
   </div>
   <div id="button-bar"></div>
   <div id="tooltip" class="tooltip"></div>
-  <p>Using the interactive year buttons, we can see that there really is no specific trend between countries or the renewable energy sector with heavy fluctuations from the years 2000 to 2023. There is no dominant country in renewable energy production, the different sectors themselves (wind, solar, hydro, other) waver on a year to year basis. However, we can see that overall renewable energy production is tending to grow on a year by year basis. We believe these fluctuations are testament to the unpredictability of weather that may impede solar, hydro, or wind development. For example, solar production is contingent on there being ample sunlight, and wind production is contingent on there being high wind speeds. Both are unpredictable and uncontrollable.</p>
+  <p>Using the interactive year buttons, we can see that there really is no specific trend between countries or the renewable energy 
+    sector with heavy fluctuations from the years 2000 to 2023. There is no dominant country in renewable energy production, the 
+    different sectors themselves (wind, solar, hydro, other) waver on a year to year basis. However, we can see that overall renewable 
+    energy production is tending to grow on a year by year basis. We believe these fluctuations are testament to the unpredictability 
+    of weather that may impede solar, hydro, or wind development. For example, solar production is contingent on there being ample 
+    sunlight, and wind production is contingent on there being high wind speeds. Both are unpredictable and uncontrollable.</p>
 
-  <p>If we narrow down our analysis to the last five years, we can analyze a smaller subset that is more directly applicable to modern days. We see within the last five years, that wind and hydro energy usually take up the bulk of renewable energy production. In addition, solar production has been generally increasing, besides for a lull in 2021. Wind energy too, has seen steady growth. Hydro, is perhaps the most stable, because it depends the least on the weather due to manmade dams and aqueducts. However, even this too may be reliant on weather forces affecting rain or drought.  Finally, other renewable energies round it out, usually providing a small subset within production due to their gradual diversification within the energy sector mix. 
-  Within a country by country basis, we notice several trends. For one, there is no dominating country in total renewable energy production, although France seems to consistently output high levels of production. All countries seem to perform better than others in specific sectors, and even then that changes on a year to year basis. There are no dominant performances, where a country has led production in all four categories.  Furthermore, China consistently outputs high levels of hydro power production, while Australia consistently outputs high levels of wind power production. </p>
+  <p>If we narrow down our analysis to the last five years, we can analyze a smaller subset that is more directly applicable to modern 
+    days. We see within the last five years, that wind and hydro energy usually take up the bulk of renewable energy production. In 
+    addition, solar production has been generally increasing, besides for a lull in 2021. Wind energy too, has seen steady growth. Hydro,
+     is perhaps the most stable, because it depends the least on the weather due to manmade dams and aqueducts. However, even this too 
+     may be reliant on weather forces affecting rain or drought.  Finally, other renewable energies round it out, usually providing a 
+     small subset within production due to their gradual diversification within the energy sector mix. </p>
+     
+  <p>Within a country by country basis, we notice several trends. For one, there is no dominating country in total renewable energy 
+      production, although France seems to consistently output high levels of production. All countries seem to perform better than others 
+      in specific sectors, and even then that changes on a year to year basis. There are no dominant performances, where a country has led 
+      production in all four categories.  Furthermore, China consistently outputs high levels of hydro power production, while Australia 
+      consistently outputs high levels of wind power production. </p>
+  
 
-  <p>Because of this, if there was one notable thing that could be improved from the visualization it would be the addition of a total energy production bar (with all the countries combined). This could be helpful for the larger picture of each year, to show growth in renewable energy in the grander scope and not only on a country by country basis. This could help a user visualize the larger picture more immediately throughout the years, whereas separating by country may provide a too muddled approach that is hard to grasp the overall changes. </p>
+  <p>Because of this, if there was one notable thing that could be improved from the visualization it would be the addition of a total 
+    energy production bar (with all the countries combined). This could be helpful for the larger picture of each year, to show growth 
+    in renewable energy in the grander scope and not only on a country by country basis. This could help a user visualize the larger 
+    picture more immediately throughout the years, whereas separating by country may provide a too muddled approach that is hard to 
+    grasp the overall changes. </p>
 
   <h2>Observations and Conclusion</h2>
-  <p>Renewable Energy and Socioeconomic Indicators: Countries with higher adoption of renewable energy sources often exhibit better socioeconomic indicators, such as higher life expectancy and average income, coupled with lower CO₂ emissions.</p>
-  <p>Low-income regions often face challenges in renewable energy adoption, with corresponding lower socioeconomic outcomes.</p>
-  <p>Temporal Progress: Over the years, many countries have made significant strides in renewable energy adoption, which often correlates with improvements in life expectancy and reductions in CO₂ emissions.</p>
-  <p>Sustainability Challenges: Some regions with high renewable energy production still face challenges in socioeconomic indicators, highlighting the complexity of achieving sustainability.</p>
-  <p>By integrating these insights into an interactive platform, the project provides a powerful tool for exploring global trends and their implications. Policymakers, researchers, and the public can use these visualizations to better understand the interconnectedness of socioeconomic factors and environmental sustainability, and to identify opportunities for improvement globally.</p>
+  <p><b>Socioeconomic Indicators: </b>Countries with higher adoption of renewable energy sources often exhibit better 
+    socioeconomic indicators, such as higher life expectancy and average income, coupled with lower CO₂ emissions.</p>
+
+  <p><b>Regional Differences: </b>Low-income regions often face challenges in renewable energy adoption, with corresponding lower 
+    socioeconomic outcomes.</p>
+
+  <p><b>Temporal Progress:</b> Over the years, many countries have made significant strides in renewable energy adoption, which often 
+    correlates
+     with improvements in life expectancy and reductions in CO₂ emissions.</p>
+
+  <p><b>Sustainability Challenges:</b> Some regions with high renewable energy production still face challenges in socioeconomic 
+    indicators, 
+    highlighting the complexity of achieving sustainability.</p>
+
+  <p>The project provides a powerful tool for exploring global trends and their implications by implementing four effective visualizations
+     for data presentation. Policymakers, researchers, and the public can use these visualizations to better understand the connection 
+     between socioeconomic factors and environmental sustainability, and to identify opportunities to improve the quality of life and 
+     the adaptation of renewable energy globally. </p>
   <script>
     //Radar Graph
     const drawRadarChart = (function () {
       const parameters = ["Renewable", "LifeExpectancy", "Healthcare", "CO2", "CostOfLiving", "AverageIncome"];
       const angleSlice = (Math.PI * 2) / parameters.length;
-      const radarWidth = 500, radarHeight = 500, radius = Math.min(radarWidth, radarHeight) / 2 - 50;
+      const radarWidth = 400, radarHeight = 400, radius = Math.min(radarWidth, radarHeight) / 2 - 50;
       const centerX = radarWidth / 2, centerY = radarHeight / 2;
 
       const mapSvg = d3.select("#map");
@@ -239,7 +389,7 @@
       }
 
       function drawMap(geoData) {
-        const projection = d3.geoMercator().fitSize([800, 500], geoData);
+        const projection = d3.geoMercator().fitSize([600, 400], geoData);
         const path = d3.geoPath().projection(projection);
     
         mapSvg.selectAll("path")
@@ -250,15 +400,18 @@
             .attr("stroke", "black")
             .attr("class", "country")
             .on("mouseover", (event, d) => {
-                const country = d.properties.name;
-                tooltip.style("visibility", "visible").text(country);
+                const country = d.properties.name || "Unknown Country";
+                tooltip.style("visibility", "visible")
+                    .style("opacity", 1)
+                    .text(country);
             })
             .on("mousemove", event => {
-                tooltip.style("top", (event.pageY - 20) + "px")
-                      .style("left", (event.pageX + 10) + "px");
+                tooltip.style("top", `${event.pageY - 30}px`)
+                    .style("left", `${event.pageX + 10}px`);
             })
             .on("mouseout", () => {
-                tooltip.style("visibility", "hidden");
+                tooltip.style("visibility", "hidden")
+                    .style("opacity", 0);
             })
             .on("click", (event, d) => {
                 selectedCountry = d.properties.name;
@@ -325,6 +478,7 @@
                 .attr("y", y * 1.1)
                 .style("text-anchor", "middle")
                 .style("fill", "black")
+                .style("font-size", "12px")
                 .text(param);
         });
     
@@ -352,8 +506,12 @@
       });
 
     });
-
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     //Bubble Plot
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     const drawBubblePlot = async () => {
 
       //Load CSVs
@@ -389,7 +547,7 @@
       );
 
       //Create chart dimensions
-      const width = 1200;
+      const width = 1000;
       const height = 600;
       const margins = { top: 50, right: 150, bottom: 100, left: 100 };
       const chartWidth = width - margins.left - margins.right;
@@ -482,7 +640,7 @@
                             .attr("opacity", 0.7);
 
       //Create legend
-      const legendWidth = (width - margins.right - margins.left) * 0.14;
+      const legendWidth = (width - margins.right - margins.left) * 0.18;
       const legendHeight = 250;
       const legendX = width - margins.right + 10;
       const legendY = margins.top;
@@ -499,11 +657,12 @@
 
       //Legend title for Income Groups
       svg.append("text")
-          .attr("x", legendX + legendWidth / 2)
-          .attr("y", legendY + 20)
-          .attr("text-anchor", "middle")
-          .attr("font-weight", "bold")
-          .text("Income Groups");
+        .attr("x", legendX + legendWidth / 2)
+        .attr("y", legendY + 20)
+        .attr("text-anchor", "middle")
+        .attr("font-weight", "bold")
+        .style("font-size", "12px") // Correct way to set font size
+        .text("Income Groups");
 
       //Append income group color indicators
       svg.append("circle")
@@ -564,6 +723,7 @@
           .attr("y", legendY + 20 + 5.5 * 25)
           .attr("text-anchor", "middle")
           .attr("font-weight", "bold")
+          .style("font-size", "12px")
           .text("CO2 Value (kT)");
 
       svg.append("circle")
@@ -598,7 +758,11 @@
         .text("40.369 kT - 81.417 kT");
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     //Line Chart
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     const drawMultiLineChart = async () => {
         // Load data
         const [renewableEnergyData, lifeExpectancyData] = await Promise.all([
@@ -632,9 +796,9 @@
         }).filter(d => d.lifeExpectancy !== null && d.co2 !== null);
 
 
-        const width = 1600;
-        const height = 700;
-        const margins = { top: 60, right: 400, bottom: 60, left: 160 };
+        const width = 1200;
+        const height = 600;
+        const margins = { top: 60, right: 200, bottom: 60, left: 300 };
         const chartWidth = width - margins.left - margins.right;
         const chartHeight = height - margins.top - margins.bottom;
 
@@ -753,7 +917,7 @@
         drawCircles(mergedData, xScale, yScaleLife, "#5F9DD4", "lifeExpectancy");
         drawCircles(mergedData, xScale, yScaleCO2, "#EC5042", "co2");
 
-        const tooltip = d3.select("#tooltip");
+        const tooltip = d3.select("#linetooltip");
 
         const drawLine = (data, lineGenerator, color, label) => {
           const lineGroup = chartArea.append("g");
@@ -764,16 +928,17 @@
             .attr("stroke", color)
             .style("cursor", "pointer")
             .on("mousemove", (event) => {
-              const [x, y] = d3.pointer(event);
-              const year = xScale.invert(x);
-              const value = yScaleLife.invert(y);
-              tooltip.style("display", "block")
-                .style("left", `${event.pageX + 15}px`)
-                .style("top", `${event.pageY - 15}px`)
-                .html(`<b>${label}</b><br>Year: ${Math.round(year.getFullYear())}<br>Value: ${value.toFixed(2)}`);
-            })
-            .on("mouseout", () => tooltip.style("display", "none"));
-        };
+            const [x, y] = d3.pointer(event);
+            const year = xScale.invert(x);
+            const value = yScaleLife.invert(y);
+            tooltip
+              .style("opacity", "1")
+              .style("left", `${event.pageX + 15}px`)
+              .style("top", `${event.pageY - 15}px`)
+              .html(`<b>${label}</b><br>Year: ${Math.round(year.getFullYear())}<br>Value: ${value.toFixed(2)}`);
+          })
+          .on("mouseout", () => tooltip.style("opacity", "0"));
+                  };
 
         drawLine(mergedData, lineEnergy, "#53C44F", "Renewable Energy");
         drawLine(mergedData, lineLife, "#5F9DD4", "Life Expectancy");
@@ -782,66 +947,90 @@
         // Axis Labels
       
         svg.append("text")
-          .attr("x", -chartHeight / 1.7) 
-          .attr("y", margins.left / 5) 
+          .attr("x", -(chartHeight / 1.7))
+          .attr("y", margins.left / 2) 
           .attr("class", "axis-label")
-          .attr("transform", "rotate(-90)") 
-          .style("text-anchor", "middle") 
+          .attr("transform", "rotate(-90)")
+          .style("text-anchor", "middle")
           .html(`
-      <tspan fill="#5F9DD4">Life Expectancy (Yrs)  &nbsp; &nbsp; </tspan>
-      <tspan fill="#EC5042">CO</tspan>
-      <tspan fill="#EC5042" font-size="150%">₂</tspan>
-      <tspan fill="#EC5042" dy="-0.2em"> Emissions (kT)</tspan>
-      `);
+            <tspan fill="#5F9DD4">Life Expectancy (Yrs) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </tspan>
+            <tspan fill="#EC5042">CO</tspan>
+            <tspan fill="#EC5042" font-size="150%">₂</tspan>
+            <tspan fill="#EC5042" dy="-0.2em"> Emissions (kT)</tspan>
+          `);
 
         // Right Axis Label - Renewable Energy
         svg.append("text")
-          .attr("x", 350) 
-          .attr("y", -1290)
+          .attr("x", width - margins.right / 2) 
+          .attr("y", margins.top + chartHeight / 2) 
           .attr("class", "axis-label")
-          .attr("transform", "rotate(90)")
+          .attr("transform", `rotate(90, ${width - margins.right / 2}, ${margins.top + chartHeight / 2})`) 
           .style("fill", "#53C44F")
           .style("text-anchor", "middle") 
           .text("Renewable Energy (GWh)");
 
 
-        svg.append("text")
-          .attr("x", chartWidth / 1.55)
-          .attr("y", height - 10)
+          svg.append("text")
+          .attr("x", chartWidth / 2 + margins.left)
+          .attr("y", height - margins.bottom / 5)
           .attr("class", "axis-label")
-          .text("Year")
-          .style("text-anchor", "middle");
+          .style("font-size", "18px")
+          .style("text-anchor", "middle")
+          .text("Year");
 
         // Legend
         const legend = svg.append("g")
-          .attr("transform", `translate(${chartWidth + 250}, ${margins.top})`)
+          .attr("transform", `translate(${width / 2 - 200}, ${margins.top / 2})`) //Center
           .attr("class", "legend");
 
         legend.append("circle")
-          .attr("cx", 0).attr("cy", 10).attr("r", 5).attr("fill", "#53C44F");
+          .attr("cx", -100)
+          .attr("cy", 0)
+          .attr("r", 5)
+          .attr("fill", "#53C44F");
+
         legend.append("text")
-          .attr("x", 15).attr("y", 14)
+          .attr("x", -90)
+          .attr("y", 5)
+          .attr("font-size", "16px")
           .text("Total Annual Renewable Energy (GWh)");
 
         legend.append("circle")
-          .attr("cx", 0).attr("cy", 30).attr("r", 5).attr("fill", "#5F9DD4");
+          .attr("cx", 220)
+          .attr("cy", 0)
+          .attr("r", 5)
+          .attr("fill", "#5F9DD4");
+
         legend.append("text")
-          .attr("x", 15).attr("y", 34)
+          .attr("x", 230)
+          .attr("y", 5)
+          .attr("font-size", "16px")
           .text("Life Expectancy (Years)");
 
         legend.append("circle")
-          .attr("cx", 0).attr("cy", 50).attr("r", 5).attr("fill", "#EC5042");
-        legend.append("text")
-          .attr("x", 15).attr("y", 54)
-          .text("CO2 Emissions (kT)");
-      };
+          .attr("cx", 430)
+          .attr("cy", 0)
+          .attr("r", 5)
+          .attr("fill", "#EC5042");
 
+        legend.append("text")
+          .attr("x", 440) 
+          .attr("y", 5)
+          .attr("font-size", "16px")
+          .text("CO2 Emissions (kT)");
+        };
+
+
+      ////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////
       //Bar chart
+      ////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////
       const RenewableEnergyChart = (function () {
           const svg = d3.select("svg#barchart");
           const width = svg.attr("width");
           const height = svg.attr("height");
-          const margin = { top: 10, right: 10, bottom: 50, left: 50 };
+          const margin = { top: 50, right: 10, bottom: 50, left: 50 };
           const chartWidth = width - margin.left - margin.right;
           const chartHeight = height - margin.top - margin.bottom;
 
@@ -849,7 +1038,7 @@
           const chartArea = svg.append("g").attr("id", "points")
               .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-          const tooltip = d3.select("#tooltip");
+          const tooltip = d3.select("#barchartTooltip");
 
           const color = d3.scaleOrdinal()
               .domain(["SolarEnergy", "WindEnergy", "HydroEnergy", "OtherRenewableEnergy"])
@@ -869,32 +1058,48 @@
           yearData = d3.group(rawData, d => d.Year);
 
           const outputScale = d3.scaleLinear().range([chartHeight, 0]);
+
           const countryScale = d3.scaleBand().range([0, chartWidth]).padding(0.1);
 
           const leftAxis = d3.axisLeft(outputScale).ticks(10);
           const leftGridlines = d3.axisLeft(outputScale)
-              .tickSize(-chartWidth - 10)
+              .ticks(10)
+              .tickSize(-chartWidth)
               .tickFormat("");
+
           annotations.append("g")
               .attr("class", "y gridlines")
-              .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+              .attr("transform", `translate(${margin.left},${margin.top})`)
               .call(leftGridlines);
+
           annotations.append("g")
               .attr("class", "y axis")
               .attr("transform", `translate(${margin.left},${margin.top})`)
-              .call(leftAxis);
+              .call(leftAxis)
+
           annotations.append("text")
               .attr("class", "y-axis-label")
               .attr("transform", `translate(${margin.left - 40}, ${margin.top + chartHeight / 2}) rotate(-90)`)
               .style("text-anchor", "middle")
-              .style("font-size", "8px")
+              .style("font-size", "16px")
               .style("fill", "#333")
               .text("(Hundreds of Thousands of MWh)");
+
           const bottomAxis = d3.axisBottom(countryScale);
+
           annotations.append("g")
               .attr("class", "x axis")
               .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+              .attr("font-size", "16px")
               .call(bottomAxis);
+
+          annotations.append("text")
+              .attr("class", "x-axis-label")
+              .attr("x", margin.left + chartWidth / 2)
+              .attr("y", chartHeight + margin.top + 50)
+              .style("text-anchor", "middle")
+              .style("font-size", "16px")
+              .text("Countries");
 
           function updateBarsAnimated(year) {
               const data = yearData.get(+year);
@@ -927,13 +1132,14 @@
                           .attr("height", d => outputScale(d[0]) - outputScale(d[1]))
                           .attr("width", countryScale.bandwidth())
                           .on("mouseover", (event, d) => {
-                              const energyType = d3.select(event.target.parentNode).datum().key;
-                              tooltip.style("display", "block")
-                                  .html(`
-                                      <strong>${d.data.Country}</strong><br>
-                                      ${energyType}: ${(d[1] - d[0]).toLocaleString()} MWh
-                                  `);
-                          })
+                            console.log("Mouseover triggered for", d);
+                            const energyType = d3.select(event.target.parentNode).datum().key;
+                            tooltip.style("display", "block")
+                                .html(`
+                                    <strong>${d.data.Country}</strong><br>
+                                    ${energyType}: ${(d[1] - d[0]).toLocaleString()} MWh
+                                `);
+                        })
                           .on("mousemove", event => {
                               tooltip.style("top", (event.pageY + 10) + "px")
                                   .style("left", (event.pageX + 10) + "px");
@@ -985,25 +1191,27 @@
 
           const legend = svg.append("g")
               .attr("id", "legend")
-              .attr("transform", `translate(${chartWidth - 200}, ${margin.top})`);
+              .attr("transform", `translate(${chartWidth / 2 - 200}, ${margin.top - 15})`);
 
           const energyTypes = ["Solar Energy", "Wind Energy", "Hydro Energy", "Other Renewable Energy"];
+          const legendSpacing = 120;
+
           legend.selectAll("g")
               .data(energyTypes)
               .join("g")
               .attr("class", "legend-item")
-              .attr("transform", (d, i) => `translate(0, ${i * 20})`)
+              .attr("transform", (d, i) => `translate(${i * legendSpacing}, 0)`)
               .each(function (d) {
                   const g = d3.select(this);
                   g.append("rect")
                       .attr("x", 0)
-                      .attr("y", 0)
+                      .attr("y", -10)
                       .attr("width", 10)
                       .attr("height", 10)
                       .attr("fill", color(d));
                   g.append("text")
-                      .attr("x", 25)
-                      .attr("y", 14)
+                      .attr("x", 15)
+                      .attr("y", 0)
                       .text(d)
                       .style("font-size", "14px")
                       .style("fill", "#333");
