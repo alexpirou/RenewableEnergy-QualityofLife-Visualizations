@@ -60,22 +60,22 @@
   border-radius: 3px;
   font-size: 12px;
   pointer-events: none;
-  opacity: 1;  /* Changed from 0 */
-  visibility: visible;  /* Changed from none */
+  opacity: 1;
+  visibility: visible;
   transition: opacity 0.2s ease-in-out;
 }
 
   .barchartTooltip {
-    position: absolute;
-    text-align: center;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 5px;
-    border-radius: 4px;
-    pointer-events: none;
-    font-size: 14px;
-    display: none; 
-}
+      position: absolute;
+      text-align: center;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 5px;
+      border-radius: 4px;
+      pointer-events: none;
+      font-size: 14px;
+      display: none; 
+  }
 
   #graph-description {
     margin-left: 0px;
@@ -938,7 +938,7 @@
               .html(`<b>${label}</b><br>Year: ${Math.round(year.getFullYear())}<br>Value: ${value.toFixed(2)}`);
           })
           .on("mouseout", () => tooltip.style("opacity", "0"));
-                  };
+        };
 
         drawLine(mergedData, lineEnergy, "#53C44F", "Renewable Energy");
         drawLine(mergedData, lineLife, "#5F9DD4", "Life Expectancy");
